@@ -1,0 +1,11 @@
+{
+  "applications": [
+    {
+      "name": "TentaP",
+      "buildCommand": "tentap-api.sh",
+      "sourceFolderPath": "c:\\users\\adam\\desktop\\tentap-api",
+      "lastBuiltCommit": "",
+      "lastBuildTime": "2000-01-01"
+    }
+  ]
+}
