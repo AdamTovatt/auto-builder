@@ -29,9 +29,12 @@ namespace AutoBuilder.Controllers
                 if (!application.IsOnLastCommit)
                 {
                     builder.Build(application);
+                    return new ApiResponse("Build started");
                 }
-
-                return new ApiResponse("Build started");
+                else
+                {
+                    return new ApiResponse("Application is already on last version");
+                }
             }
             catch (ApiException exception)
             {
