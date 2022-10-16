@@ -72,6 +72,10 @@ namespace AutoBuilder.Managers
 
             process.OutputDataReceived += buildOutputHandler;
 
+            buildLog.AppendLine("will wait for process exit");
+            application.BuildLog = buildLog.ToString();
+            Save();
+
             process.WaitForExit();
 
             buildLog.AppendLine("build process was exited");
