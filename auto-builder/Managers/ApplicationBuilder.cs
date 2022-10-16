@@ -43,7 +43,6 @@ namespace AutoBuilder.Managers
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
             startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;
 
             return Process.Start(startInfo);
         }
