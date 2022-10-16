@@ -50,7 +50,7 @@ namespace AutoBuilder.Managers
         private void UpdateApplicationInfoWhileBuilding(Process process, Application application)
         {
             StringBuilder buildLog = new StringBuilder();
-            buildLog.AppendLine("build started");
+            buildLog.AppendLine("build started: " + DateTime.Now.ToShortTimeString());
 
             application.BuildLog = buildLog.ToString();
             Save();
@@ -69,7 +69,9 @@ namespace AutoBuilder.Managers
             process.OutputDataReceived += buildOutputHandler;
 
             process.WaitForExit();
-            
+
+            buildLog.AppendLine("build process was exited");
+
             application.LastBuiltCommit = application.LastCommit.Sha;
             application.BuildLog = process.StandardOutput.ReadToEnd();
             Save();
