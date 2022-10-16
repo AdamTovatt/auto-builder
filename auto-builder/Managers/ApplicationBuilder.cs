@@ -26,6 +26,7 @@ namespace AutoBuilder.Managers
             try
             {
                 Process process = RunCommand(application.BuildCommand);
+                application.LastBuildTime = DateTime.Now;
                 Task.Run(() => { UpdateApplicationInfoWhileBuilding(process, application); });
             }
             catch(Exception exception)
