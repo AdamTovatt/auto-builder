@@ -38,7 +38,7 @@ namespace AutoBuilder.Managers
         private Process RunCommand(string command)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = "~/../../bin/bash";
+            startInfo.FileName = "bash";
             startInfo.Arguments = command;
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
