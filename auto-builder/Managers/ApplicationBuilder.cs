@@ -29,7 +29,7 @@ namespace AutoBuilder.Managers
                 application.LastBuildTime = DateTime.Now;
                 Task.Run(() => { UpdateApplicationInfoWhileBuilding(process, application); });
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 throw new ApiException("Error when starting build: " + exception.Message, System.Net.HttpStatusCode.InternalServerError);
             }
@@ -38,9 +38,10 @@ namespace AutoBuilder.Managers
         private Process RunCommand(string command)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = "/bin/bash";
+            startInfo.FileName = "sh";
             startInfo.Arguments = command;
             startInfo.RedirectStandardOutput = true;
+            startInfo.RedirectStandardError = true;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
 
@@ -51,12 +52,14 @@ namespace AutoBuilder.Managers
         {
             StringBuilder buildLog = new StringBuilder();
             buildLog.AppendLine("build started: " + DateTime.Now.ToShortTimeString());
+            buildLog.AppendLine(string.Format("start info: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
             buildLog.AppendLine("process has exited: " + process.HasExited);
 
             application.BuildLog = buildLog.ToString();
             Save();
 
-            DataReceivedEventHandler buildOutputHandler = (sender, eventData) => { 
+            DataReceivedEventHandler buildOutputHandler = (sender, eventData) =>
+            {
                 string data = eventData.Data;
 
                 if (!string.IsNullOrEmpty(data))
