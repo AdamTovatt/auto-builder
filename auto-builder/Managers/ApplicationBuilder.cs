@@ -40,8 +40,8 @@ namespace AutoBuilder.Managers
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = "sh";
             startInfo.Arguments = command;
-            startInfo.RedirectStandardOutput = false;
-            startInfo.RedirectStandardError = false;
+            startInfo.RedirectStandardOutput = true;
+            startInfo.RedirectStandardError = true;
             startInfo.UseShellExecute = false;
 
             return Process.Start(startInfo);
