@@ -26,7 +26,7 @@ namespace AutoBuilder.Controllers
                 if (application == null)
                     return new ApiResponse("No application with name: \"" + applicationName + "\" could be found", System.Net.HttpStatusCode.BadRequest);
 
-                if (!application.IsOnLastCommit)
+                if (true || !application.IsOnLastCommit) //don't check last commit for now
                 {
                     builder.Build(application);
                     return new ApiResponse("Build started");
