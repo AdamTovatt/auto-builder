@@ -52,6 +52,7 @@ namespace AutoBuilder.Managers
             StringBuilder buildLog = new StringBuilder();
             buildLog.AppendLine("build started");
 
+            application.BuildLog = buildLog.ToString();
             Save();
 
             DataReceivedEventHandler buildOutputHandler = (sender, eventData) => { 
