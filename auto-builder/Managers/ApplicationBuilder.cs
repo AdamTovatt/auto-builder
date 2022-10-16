@@ -51,6 +51,7 @@ namespace AutoBuilder.Managers
         {
             StringBuilder buildLog = new StringBuilder();
             buildLog.AppendLine("build started: " + DateTime.Now.ToShortTimeString());
+            buildLog.AppendLine("process has exited: " + process.HasExited);
 
             application.BuildLog = buildLog.ToString();
             Save();
