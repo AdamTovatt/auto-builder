@@ -40,8 +40,8 @@ namespace AutoBuilder.Managers
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = "sh";
             startInfo.Arguments = command;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
+            startInfo.RedirectStandardOutput = false;
+            startInfo.RedirectStandardError = false;
             startInfo.UseShellExecute = false;
 
             return Process.Start(startInfo);
@@ -75,6 +75,7 @@ namespace AutoBuilder.Managers
 
             buildLog.AppendLine("build process was exited");
 
+            buildLog.AppendLine(process.StandardOutput.ReadToEnd());
             application.BuildLog = buildLog.ToString();
             Save();
         }
