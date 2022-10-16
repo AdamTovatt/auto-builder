@@ -76,7 +76,7 @@ namespace AutoBuilder.Managers
 
             buildLog.AppendLine("build process was exited");
 
-            //application.LastBuiltCommit = application.LastCommit.Sha;
+            application.LastBuiltCommit = application.LastCommit.Sha;
             application.BuildLog = process.StandardOutput.ReadToEnd();
             Save();
         }
