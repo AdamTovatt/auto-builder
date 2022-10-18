@@ -53,6 +53,8 @@ namespace AutoBuilder.Models
                 CreateNewLog();
 
             currentLog.AppendLine(logMessage);
+
+            BuildLog = currentLog.ToString();
         }
 
         public List<Command> GetCommands()
