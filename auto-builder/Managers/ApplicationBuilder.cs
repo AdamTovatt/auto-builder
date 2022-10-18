@@ -25,9 +25,7 @@ namespace AutoBuilder.Managers
         {
             try
             {
-                Process process = RunCommand(application.BuildCommand);
-                application.LastBuildTime = DateTime.Now;
-                Task.Run(() => { UpdateApplicationInfoWhileBuilding(process, application); });
+                Task.Run(async () => { await BuildTask(application); });
             }
             catch (Exception exception)
             {
@@ -35,18 +33,40 @@ namespace AutoBuilder.Managers
             }
         }
 
-        private Process RunCommand(string command)
+        private async Task BuildTask(Application application)
+        {
+            application.LastBuildTime = DateTime.Now;
+            application.CreateNewLog();
+            application.AppendToLog("Build started!\n");
+            Save();
+
+            foreach(Command command in application.GetCommands())
+            {
+                application.AppendToLog(command.ToString());
+                Save();
+
+                application.AppendToLog(await RunCommandAsync(command));
+                Save();
+            }
+        }
+
+        private async Task<string> RunCommandAsync(Command command)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = "bash";
-            startInfo.Arguments = command;
+            startInfo.WorkingDirectory = command.WorkingDirectory;
+            startInfo.FileName = command.FileName;
+            startInfo.Arguments = command.Arguments;
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
             startInfo.UseShellExecute = false;
 
-            return Process.Start(startInfo);
+            Process process = Process.Start(startInfo);
+            await process.WaitForExitAsync();
+
+            return await process.StandardOutput.ReadToEndAsync();
         }
 
+        /*
         private void UpdateApplicationInfoWhileBuilding(Process process, Application application)
         {
             StringBuilder buildLog = new StringBuilder();
@@ -78,7 +98,7 @@ namespace AutoBuilder.Managers
             buildLog.AppendLine(process.StandardOutput.ReadToEnd());
             application.BuildLog = buildLog.ToString();
             Save();
-        }
+        }*/
 
         public Application GetApplication(string name)
         {

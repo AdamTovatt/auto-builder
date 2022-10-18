@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using Sakur.WebApiUtilities.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace AutoBuilder.Models
 {
@@ -15,22 +17,16 @@ namespace AutoBuilder.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// The name of the build script that should run when the application needs to be built
-        /// </summary>
-        [JsonProperty("buildScriptName")]
-        public string BuildCommand { get; set; }
-
-        /// <summary>
         /// The path to folder with the source code, used for git
         /// </summary>
         [JsonProperty("sourceFolderPath")]
         public string SourceFolderPath { get; set; }
 
         /// <summary>
-        /// The commit hash of the last commit that was built
+        /// The list of commands to run when building
         /// </summary>
-        [JsonProperty("lastBuiltCommit")]
-        public string LastBuiltCommit { get; set; }
+        [JsonProperty("buildCommands")]
+        public List<string> BuildCommands { get; set; }
 
         /// <summary>
         /// The last time the application was built
@@ -44,41 +40,47 @@ namespace AutoBuilder.Models
         [JsonProperty("buildLog")]
         public string BuildLog { get; set; }
 
-        /// <summary>
-        /// The last commit for the repository of this application
-        /// </summary>
-        [JsonIgnore]
-        public Commit LastCommit { get { return GetLastCommit(); } }
+        private StringBuilder currentLog;
 
-        /// <summary>
-        /// Wether or not the application has built the last commit from the repository
-        /// </summary>
-        [JsonIgnore]
-        public bool IsOnLastCommit { get { return CheckIfIsOnLastCommit(); } }
-
-        private Commit GetLastCommit()
+        public void CreateNewLog()
         {
-            try
-            {
-                using (Repository repository = new Repository(SourceFolderPath))
-                {
-                    Commit commit = repository.Commits.FirstOrDefault();
-
-                    if (commit == null)
-                        throw new ApiException("No commits found for \"" + Name + "\"", System.Net.HttpStatusCode.InternalServerError);
-
-                    return commit;
-                }
-            }
-            catch (RepositoryNotFoundException)
-            {
-                throw new ApiException("Error in config file for \"" + Name + "\". No repository found at: " + SourceFolderPath, System.Net.HttpStatusCode.InternalServerError);
-            }
+            currentLog = new StringBuilder();
         }
 
-        private bool CheckIfIsOnLastCommit()
+        public void AppendToLog(string logMessage)
         {
-            return LastCommit.Sha == LastBuiltCommit;
+            if (currentLog == null)
+                CreateNewLog();
+
+            currentLog.AppendLine(logMessage);
+        }
+
+        public List<Command> GetCommands()
+        {
+            List<Command> commands = new List<Command>();
+
+            foreach (string command in BuildCommands)
+            {
+                StringBuilder argument = new StringBuilder();
+                string[] parts = command.Split();
+
+                if (parts.Length > 1)
+                {
+                    for (int i = 1; i < parts.Length; i++)
+                    {
+                        argument.Append(string.Format("{0} ", parts[i]));
+                    }
+                }
+
+                commands.Add(new Command()
+                {
+                    WorkingDirectory = SourceFolderPath,
+                    FileName = parts[0],
+                    Arguments = argument.ToString().Trim()
+                });
+            }
+
+            return commands;
         }
     }
 }
