@@ -11,6 +11,13 @@ namespace AutoBuilder.Models
         public string FileName { get; set; }
         public string Arguments { get; set; }
 
+        public Command(string workingDirectory, string fileName, string arguments)
+        {
+            WorkingDirectory = workingDirectory;
+            FileName = fileName;
+            Arguments = arguments;
+        }
+
         public override string ToString()
         {
             return string.Format("{0} {1}", FileName, Arguments);

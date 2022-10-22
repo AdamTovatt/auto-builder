@@ -33,6 +33,14 @@ namespace AutoBuilder.Managers
             }
         }
 
+        public async Task<bool> CheckGitAlreadyUpdated(Application application)
+        {
+            Command gitCommand = new Command(application.SourceFolderPath, "git", "pull");
+            application.SourceFolderPath = ConfigurationFileName;
+
+            return false;
+        }
+
         private async Task BuildTask(Application application)
         {
             application.LastBuildTime = DateTime.Now;
@@ -65,40 +73,6 @@ namespace AutoBuilder.Managers
 
             return await process.StandardOutput.ReadToEndAsync();
         }
-
-        /*
-        private void UpdateApplicationInfoWhileBuilding(Process process, Application application)
-        {
-            StringBuilder buildLog = new StringBuilder();
-            buildLog.AppendLine("build started: " + DateTime.Now.ToShortTimeString());
-            buildLog.AppendLine(string.Format("start info: {0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments));
-            buildLog.AppendLine("process has exited: " + process.HasExited);
-
-            application.BuildLog = buildLog.ToString();
-            Save();
-
-            DataReceivedEventHandler buildOutputHandler = (sender, eventData) =>
-            {
-                string data = eventData.Data;
-
-                if (!string.IsNullOrEmpty(data))
-                {
-                    buildLog.Append(data);
-                    application.BuildLog = buildLog.ToString();
-                    Save();
-                }
-            };
-
-            process.OutputDataReceived += buildOutputHandler;
-
-            process.WaitForExit();
-
-            buildLog.AppendLine("build process was exited");
-
-            buildLog.AppendLine(process.StandardOutput.ReadToEnd());
-            application.BuildLog = buildLog.ToString();
-            Save();
-        }*/
 
         public Application GetApplication(string name)
         {
