@@ -1,0 +1,16 @@
+{
+  "applications": [
+    {
+      "name": "TentaP",
+      "sourceFolderPath": "/home/pi/sakur/tentap-api",
+      "buildCommands": [
+        "git pull",
+        "systemctl stop tentap-api",
+        "dotnet publish -c Release -r linux-arm",
+        "systemctl start tentap-api"
+      ],
+      "lastBuildTime": "2022-10-22T19:48:57.4671919+01:00",
+      "buildLog": "Build started!\n\ngit pull\nAlready up to date.\n\nsystemctl stop tentap-api\n\ndotnet publish -c Release -r linux-arm\nMicrosoft (R) Build Engine version 16.11.2+f32259642 for .NET\r\nCopyright (C) Microsoft Corporation. All rights reserved.\r\n\n  Determining projects to restore...\n  All projects are up-to-date for restore.\n  TentaPApi -> /home/pi/sakur/tentap-api/bin/Release/net5.0/linux-arm/TentaPApi.dll\n  TentaPApi -> /home/pi/sakur/tentap-api/bin/Release/net5.0/linux-arm/publish/\n\nsystemctl start tentap-api\n\n"
+    }
+  ]
+}
