@@ -33,14 +33,6 @@ namespace AutoBuilder.Managers
             }
         }
 
-        public async Task<bool> CheckGitAlreadyUpdated(Application application)
-        {
-            Command gitCommand = new Command(application.SourceFolderPath, "git", "pull");
-            application.SourceFolderPath = ConfigurationFileName;
-
-            return false;
-        }
-
         private async Task BuildTask(Application application)
         {
             application.LastBuildTime = DateTime.Now;
