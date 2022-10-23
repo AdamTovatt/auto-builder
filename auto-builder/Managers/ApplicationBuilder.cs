@@ -14,7 +14,7 @@ namespace AutoBuilder.Managers
 {
     public class ApplicationBuilder
     {
-        public static string ConfigurationFileName { get; set; } = "auto-builder-configuration.json";
+        public static string ConfigurationFilePath { get; set; } = "auto-builder-configuration.json";
 
         /// <summary>
         /// A list of applications that the application builder will support
@@ -84,10 +84,10 @@ namespace AutoBuilder.Managers
 
         public static ApplicationBuilder Load()
         {
-            ConfigurationFileName = EnvironmentHelper.GetEnvironmentVariable("CONFIG_PATH");
+            ConfigurationFilePath = EnvironmentHelper.GetEnvironmentVariable("CONFIG_PATH");
 
-            if (File.Exists(ConfigurationFileName))
-                return FromJson(File.ReadAllText(ConfigurationFileName));
+            if (File.Exists(ConfigurationFilePath))
+                return FromJson(File.ReadAllText(ConfigurationFilePath));
 
             ApplicationBuilder result = new ApplicationBuilder();
             result.Save();
@@ -97,7 +97,7 @@ namespace AutoBuilder.Managers
 
         public void Save()
         {
-            File.WriteAllText(ConfigurationFileName, ToJson());
+            File.WriteAllText(ConfigurationFilePath, ToJson());
         }
     }
 }
