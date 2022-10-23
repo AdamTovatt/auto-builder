@@ -49,6 +49,9 @@ namespace AutoBuilder.Managers
                 application.AppendToLog(await RunCommandAsync(command));
                 Save();
             }
+
+            application.AppendToLog("\nBuild done!");
+            Save();
         }
 
         private async Task<string> RunCommandAsync(Command command)
