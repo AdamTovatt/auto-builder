@@ -1,4 +1,5 @@
-﻿using AutoBuilder.Models;
+﻿using AutoBuilder.Helpers;
+using AutoBuilder.Models;
 using Newtonsoft.Json;
 using Sakur.WebApiUtilities.Models;
 using System;
@@ -40,7 +41,7 @@ namespace AutoBuilder.Managers
             application.AppendToLog("Build started!\n");
             Save();
 
-            foreach(Command command in application.GetCommands())
+            foreach (Command command in application.GetCommands())
             {
                 application.AppendToLog(command.ToString());
                 Save();
@@ -83,6 +84,8 @@ namespace AutoBuilder.Managers
 
         public static ApplicationBuilder Load()
         {
+            ConfigurationFileName = EnvironmentHelper.GetEnvironmentVariable("CONFIG_PATH");
+
             if (File.Exists(ConfigurationFileName))
                 return FromJson(File.ReadAllText(ConfigurationFileName));
 

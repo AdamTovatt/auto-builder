@@ -28,7 +28,7 @@ namespace AutoBuilder.Controllers
                 Application application = builder.GetApplication(applicationName);
 
                 if (application == null)
-                    return new ApiResponse("No application with name: \"" + applicationName + "\" could be found", System.Net.HttpStatusCode.BadRequest);
+                    return new ApiResponse(new { message = "No application with name: \"" + applicationName + "\" could be found", applicationCount = builder.Applications.Count }, System.Net.HttpStatusCode.BadRequest);
 
                 builder.Build(application);
                 return new ApiResponse("Build started");
@@ -49,7 +49,7 @@ namespace AutoBuilder.Controllers
                 Application application = builder.GetApplication(applicationName);
 
                 if (application == null)
-                    return new ApiResponse("No application with name: \"" + applicationName + "\" could be found", System.Net.HttpStatusCode.BadRequest);
+                    return new ApiResponse(new { message = "No application with name: \"" + applicationName + "\" could be found", applicationCount = builder.Applications.Count }, System.Net.HttpStatusCode.BadRequest);
 
                 return new ApiResponse(new { log = application.BuildLog }, System.Net.HttpStatusCode.OK);
             }
