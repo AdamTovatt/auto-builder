@@ -11,6 +11,8 @@ namespace AutoBuilder.Models
         public string FileName { get; set; }
         public string Arguments { get; set; }
 
+        public Command() { }
+
         public Command(string workingDirectory, string fileName, string arguments)
         {
             WorkingDirectory = workingDirectory;

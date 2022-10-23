@@ -6,6 +6,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Properties\launchSettings.json" />
+    <Content Remove="Properties\launchSettings_git.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_WebToolingArtifacts Remove="Properties\launchSettings.json" />
+    <_WebToolingArtifacts Remove="Properties\launchSettings_git.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Properties\launchSettings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.315" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
