@@ -1,5 +1,4 @@
-﻿using LibGit2Sharp;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Sakur.WebApiUtilities.Models;
 using System;
 using System.Collections.Generic;
