@@ -70,6 +70,15 @@ namespace AutoBuilder.Controllers
 
                 ApplicationBuilder builder = ApplicationBuilder.Load();
 
+                try
+                {
+                    builder.Save();
+                }
+                catch (Exception exception)
+                {
+                    return new ApiResponse(new { errorMessage = exception, configurationFilePath = ApplicationBuilder.ConfigurationFilePath }, System.Net.HttpStatusCode.InternalServerError);
+                }
+
                 return new ApiResponse(new { applicationCount = builder.Applications.Count, configPath = ApplicationBuilder.ConfigurationFilePath, builder.Applications }, System.Net.HttpStatusCode.OK);
             }
             catch (ApiException exception)
