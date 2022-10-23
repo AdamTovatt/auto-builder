@@ -6,3 +6,4 @@ auto-builder/[Bb]in/
 auto-builder/[Oo]bj/
 .vs/
 auto-builder/Properties/launchSettings.json
+auto-builder-configuration.json
