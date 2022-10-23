@@ -79,7 +79,7 @@ namespace AutoBuilder.Controllers
                 }
                 catch (Exception exception)
                 {
-                    return new ApiResponse(new { errorMessage = exception, configurationFilePath = ApplicationBuilder.ConfigurationFilePath }, System.Net.HttpStatusCode.InternalServerError);
+                    return new ApiResponse(new { configurationFilePath = ApplicationBuilder.ConfigurationFilePath, errorMessage = exception.Message }, System.Net.HttpStatusCode.InternalServerError);
                 }
             }
             catch (ApiException exception)
