@@ -1,4 +1,5 @@
-﻿using AutoBuilder.Managers;
+﻿using AutoBuilder.Helpers;
+using AutoBuilder.Managers;
 using AutoBuilder.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,10 +16,13 @@ namespace AutoBuilder.Controllers
     public class BuildController : ControllerBase
     {
         [HttpPost("/start")]
-        public IActionResult Build(string applicationName)
+        public IActionResult Build(string applicationName, string apiKey)
         {
             try
             {
+                if (EnvironmentHelper.GetEnvironmentVariable("APIKEY") != apiKey)
+                    return new ApiResponse("Invalid apiKey provided in query parameter", System.Net.HttpStatusCode.BadRequest);
+
                 ApplicationBuilder builder = ApplicationBuilder.Load();
 
                 Application application = builder.GetApplication(applicationName);
