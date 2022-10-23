@@ -68,18 +68,19 @@ namespace AutoBuilder.Controllers
                 if (EnvironmentHelper.GetEnvironmentVariable("APIKEY") != apiKey)
                     return new ApiResponse("Invalid apiKey provided in query parameter", System.Net.HttpStatusCode.BadRequest);
 
-                ApplicationBuilder builder = ApplicationBuilder.Load();
-
                 try
                 {
+
+                    ApplicationBuilder builder = ApplicationBuilder.Load();
+
                     builder.Save();
+
+                    return new ApiResponse(new { applicationCount = builder.Applications.Count, configPath = ApplicationBuilder.ConfigurationFilePath, builder.Applications }, System.Net.HttpStatusCode.OK);
                 }
                 catch (Exception exception)
                 {
                     return new ApiResponse(new { errorMessage = exception, configurationFilePath = ApplicationBuilder.ConfigurationFilePath }, System.Net.HttpStatusCode.InternalServerError);
                 }
-
-                return new ApiResponse(new { applicationCount = builder.Applications.Count, configPath = ApplicationBuilder.ConfigurationFilePath, builder.Applications }, System.Net.HttpStatusCode.OK);
             }
             catch (ApiException exception)
             {
