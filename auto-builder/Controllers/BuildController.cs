@@ -73,10 +73,12 @@ namespace AutoBuilder.Controllers
                     ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
 
                     Command temperatureCommand = new Command("vcgencmd measure_temp", WorkingDirectory.Default);
+                    Command cpuUsageCommand = new Command("top -n 1 -b -u pi", WorkingDirectory.Default);
 
                     return new ApiResponse(new
                     {
                         temperature = await temperatureCommand.RunAsync(),
+                        cpuUsage = await cpuUsageCommand.RunAsync(),
                         applicationCount = builder.Applications.Count,
                         configPath = ApplicationBuilder.ConfigurationFilePath,
                         builder.Applications
