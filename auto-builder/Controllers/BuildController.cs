@@ -17,14 +17,14 @@ namespace AutoBuilder.Controllers
     public class BuildController : ControllerBase
     {
         [HttpPost("/start")]
-        public IActionResult Build(string applicationName, string apiKey)
+        public async Task<IActionResult> Build(string applicationName, string apiKey)
         {
             try
             {
                 if (EnvironmentHelper.GetEnvironmentVariable("APIKEY") != apiKey)
                     return new ApiResponse("Invalid apiKey provided in query parameter", System.Net.HttpStatusCode.BadRequest);
 
-                ApplicationBuilder builder = ApplicationBuilder.Load();
+                ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
 
                 Application application = builder.GetApplication(applicationName);
 
@@ -41,11 +41,11 @@ namespace AutoBuilder.Controllers
         }
 
         [HttpGet("/log")]
-        public IActionResult GetLog(string applicationName)
+        public async Task<IActionResult> GetLog(string applicationName)
         {
             try
             {
-                ApplicationBuilder builder = ApplicationBuilder.Load();
+                ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
 
                 Application application = builder.GetApplication(applicationName);
 
@@ -61,7 +61,7 @@ namespace AutoBuilder.Controllers
         }
 
         [HttpGet("/status")]
-        public IActionResult GetStatus(string apiKey)
+        public async Task<IActionResult> GetStatus(string apiKey)
         {
             try
             {
@@ -70,12 +70,17 @@ namespace AutoBuilder.Controllers
 
                 try
                 {
+                    ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
 
-                    ApplicationBuilder builder = ApplicationBuilder.Load();
+                    Command temperatureCommand = new Command("vcgencmd measure_temp", WorkingDirectory.Default);
 
-                    builder.Save();
-
-                    return new ApiResponse(new { applicationCount = builder.Applications.Count, configPath = ApplicationBuilder.ConfigurationFilePath, builder.Applications }, System.Net.HttpStatusCode.OK);
+                    return new ApiResponse(new
+                    {
+                        temperature = await temperatureCommand.RunAsync(),
+                        applicationCount = builder.Applications.Count,
+                        configPath = ApplicationBuilder.ConfigurationFilePath,
+                        builder.Applications
+                    }, System.Net.HttpStatusCode.OK);
                 }
                 catch (Exception exception)
                 {

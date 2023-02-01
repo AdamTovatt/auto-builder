@@ -62,23 +62,7 @@ namespace AutoBuilder.Models
 
             foreach (string command in BuildCommands)
             {
-                StringBuilder argument = new StringBuilder();
-                string[] parts = command.Split();
-
-                if (parts.Length > 1)
-                {
-                    for (int i = 1; i < parts.Length; i++)
-                    {
-                        argument.Append(string.Format("{0} ", parts[i]));
-                    }
-                }
-
-                commands.Add(new Command()
-                {
-                    WorkingDirectory = SourceFolderPath,
-                    FileName = parts[0],
-                    Arguments = argument.ToString().Trim()
-                });
+                commands.Add(new Command(command, SourceFolderPath));
             }
 
             return commands;

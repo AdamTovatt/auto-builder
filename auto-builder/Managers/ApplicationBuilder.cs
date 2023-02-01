@@ -38,36 +38,22 @@ namespace AutoBuilder.Managers
         {
             application.LastBuildTime = DateTime.Now;
             application.CreateNewLog();
-            application.AppendToLog("Build started!\n");
-            Save();
+
+            await WriteApplicationLogAsync(application, string.Format("Build started! ({0})\n", DateTime.Now.ToString()));
 
             foreach (Command command in application.GetCommands())
             {
-                application.AppendToLog(command.ToString());
-                Save();
-
-                application.AppendToLog(await RunCommandAsync(command));
-                Save();
+                await WriteApplicationLogAsync(application, command.ToString()); //write the command
+                await WriteApplicationLogAsync(application, await command.RunAsync()); //write the result of the command
             }
 
-            application.AppendToLog("\nBuild done!");
-            Save();
+            await WriteApplicationLogAsync(application, string.Format("\nBuild done! ({0})\nTook {1}s\n", DateTime.Now.ToString(), (int)(DateTime.Now - application.LastBuildTime).TotalSeconds));
         }
 
-        private async Task<string> RunCommandAsync(Command command)
+        public async Task WriteApplicationLogAsync(Application application, string message)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WorkingDirectory = command.WorkingDirectory;
-            startInfo.FileName = command.FileName;
-            startInfo.Arguments = command.Arguments;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
-            startInfo.UseShellExecute = false;
-
-            Process process = Process.Start(startInfo);
-            await process.WaitForExitAsync();
-
-            return await process.StandardOutput.ReadToEndAsync();
+            application.AppendToLog(message);
+            await SaveAsync();
         }
 
         public Application GetApplication(string name)
@@ -85,22 +71,22 @@ namespace AutoBuilder.Managers
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
-        public static ApplicationBuilder Load()
+        public static async Task<ApplicationBuilder> LoadAsync()
         {
             ConfigurationFilePath = EnvironmentHelper.GetEnvironmentVariable("CONFIG_PATH");
 
             if (File.Exists(ConfigurationFilePath))
-                return FromJson(File.ReadAllText(ConfigurationFilePath));
+                return FromJson(await File.ReadAllTextAsync(ConfigurationFilePath)); //return existing if it exists
 
-            ApplicationBuilder result = new ApplicationBuilder();
-            result.Save();
+            ApplicationBuilder result = new ApplicationBuilder(); //create new one if none exists
+            await result.SaveAsync();
 
             return result;
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            File.WriteAllText(ConfigurationFilePath, ToJson());
+            await File.WriteAllTextAsync(ConfigurationFilePath, ToJson());
         }
     }
 }
