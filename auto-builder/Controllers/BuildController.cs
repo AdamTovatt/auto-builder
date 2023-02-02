@@ -26,10 +26,10 @@ namespace AutoBuilder.Controllers
 
                 ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
 
-                Application application = builder.GetApplication(applicationName);
+                ApplicationConfiguration application = builder.GetApplication(applicationName);
 
                 if (application == null)
-                    return new ApiResponse(new { message = "No application with name: \"" + applicationName + "\" could be found", applicationCount = builder.Applications.Count }, System.Net.HttpStatusCode.BadRequest);
+                    return new ApiResponse(new { message = "No application with name: \"" + applicationName + "\" could be found", applicationCount = builder.ApplicationCount }, System.Net.HttpStatusCode.BadRequest);
 
                 builder.Build(application);
                 return new ApiResponse("Build started");
@@ -47,10 +47,10 @@ namespace AutoBuilder.Controllers
             {
                 ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
 
-                Application application = builder.GetApplication(applicationName);
+                ApplicationConfiguration application = builder.GetApplication(applicationName);
 
                 if (application == null)
-                    return new ApiResponse(new { message = "No application with name: \"" + applicationName + "\" could be found", applicationCount = builder.Applications.Count }, System.Net.HttpStatusCode.BadRequest);
+                    return new ApiResponse(new { message = "No application with name: \"" + applicationName + "\" could be found", applicationCount = builder.ApplicationCount }, System.Net.HttpStatusCode.BadRequest);
 
                 return new ApiResponse(new { log = application.BuildLog }, System.Net.HttpStatusCode.OK);
             }
@@ -72,16 +72,17 @@ namespace AutoBuilder.Controllers
                 {
                     ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
 
-                    Command temperatureCommand = new Command("vcgencmd measure_temp", WorkingDirectory.Default);
-                    Command cpuUsageCommand = new Command("top -n 1 -b -u pi", WorkingDirectory.Default);
+
+                    TopCommand topCommand = await TopCommand.GetCurrentAsync();
+
+                    List<Application> applications = await builder.GetApplicationsAsync(topCommand);
 
                     return new ApiResponse(new
                     {
-                        temperature = await temperatureCommand.RunAsync(),
-                        cpuUsage = await cpuUsageCommand.RunAsync(),
-                        applicationCount = builder.Applications.Count,
+                        temperature = await TemperatureCommand.GetCurrentAsync(),
+                        applicationCount = applications.Count,
                         configPath = ApplicationBuilder.ConfigurationFilePath,
-                        builder.Applications
+                        applications
                     }, System.Net.HttpStatusCode.OK);
                 }
                 catch (Exception exception)

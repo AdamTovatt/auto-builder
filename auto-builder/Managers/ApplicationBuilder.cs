@@ -20,9 +20,25 @@ namespace AutoBuilder.Managers
         /// A list of applications that the application builder will support
         /// </summary>
         [JsonProperty("applications")]
-        public List<Application> Applications { get; set; } = new List<Application>();
+        private List<ApplicationConfiguration> Applications { get; set; }
 
-        public void Build(Application application)
+        [JsonIgnore]
+        public int ApplicationCount { get { return Applications.Count; } }
+
+        public async Task<List<Application>> GetApplicationsAsync(TopCommand topCommand)
+        {
+            List<Application> result = new List<Application>();
+
+            foreach(ApplicationConfiguration configuration in Applications)
+            {
+                Application application = new Application(configuration);
+                result.Add(application);
+            }
+
+            return result;
+        }
+
+        public void Build(ApplicationConfiguration application)
         {
             try
             {
@@ -34,7 +50,7 @@ namespace AutoBuilder.Managers
             }
         }
 
-        private async Task BuildTask(Application application)
+        private async Task BuildTask(ApplicationConfiguration application)
         {
             application.LastBuildTime = DateTime.Now;
             application.CreateNewLog();
@@ -50,13 +66,13 @@ namespace AutoBuilder.Managers
             await WriteApplicationLogAsync(application, string.Format("\nBuild done! ({0})\nTook {1}s\n", DateTime.Now.ToString(), (int)(DateTime.Now - application.LastBuildTime).TotalSeconds));
         }
 
-        public async Task WriteApplicationLogAsync(Application application, string message)
+        public async Task WriteApplicationLogAsync(ApplicationConfiguration application, string message)
         {
             application.AppendToLog(message);
             await SaveAsync();
         }
 
-        public Application GetApplication(string name)
+        public ApplicationConfiguration GetApplication(string name)
         {
             return Applications.Where(x => x.Name.ToLower() == name.ToLower()).FirstOrDefault();
         }
