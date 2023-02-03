@@ -28,9 +28,9 @@ namespace AutoBuilderTests
 
             TopCommand top = new TopCommand(topCommandString);
 
-            Assert.IsTrue(top.LoadAverage1Minute == 0.00);
-            Assert.IsTrue(top.LoadAverage5Minute == 0.20);
-            Assert.IsTrue(top.LoadAverage15Minute == 0.62);
+            Assert.IsTrue(top.LoadAverage1Minute == (0.00 / 4) * 100);
+            Assert.IsTrue(top.LoadAverage5Minute == (0.20 / 4) * 100);
+            Assert.IsTrue(top.LoadAverage15Minute == (0.62 / 4) * 100);
             Assert.IsTrue(top.ApplicatonRows.Count == 10);
         }
     }

@@ -15,13 +15,16 @@ namespace AutoBuilder.Models
             public double CpuUsage { get; set; }
             public double MemoryUsage { get; set; }
             public double CpuTime { get; set; }
-            public string Name { get; set; }
+            public string Path { get; set; }
         }
 
         public string Error { get; set; }
         public double LoadAverage1Minute { get; set; }
         public double LoadAverage5Minute { get; set; }
         public double LoadAverage15Minute { get; set; }
+        public DateTime Time { get; set; }
+        public string Uptime { get; set; }
+        public double TotalCpuUsage { get; set; }
         public List<TopCommandApplicationRow> ApplicatonRows { get; set; }
 
         public TopCommand() { }
@@ -31,10 +34,12 @@ namespace AutoBuilder.Models
             ApplicatonRows = new List<TopCommandApplicationRow>();
 
             string loadAverages = commandResult.Split("load average:")[1].Split("\n")[0];
+            LoadAverage1Minute = (double.Parse(loadAverages.Split(",")[0].Trim(), CultureInfo.InvariantCulture) / 4.0) * 100;
+            LoadAverage5Minute = (double.Parse(loadAverages.Split(",")[1].Trim(), CultureInfo.InvariantCulture) / 4.0) * 100;
+            LoadAverage15Minute = (double.Parse(loadAverages.Split(",")[2].Trim(), CultureInfo.InvariantCulture) / 4.0) * 100;
 
-            LoadAverage1Minute = double.Parse(loadAverages.Split(",")[0].Trim(), CultureInfo.InvariantCulture);
-            LoadAverage5Minute = double.Parse(loadAverages.Split(",")[1].Trim(), CultureInfo.InvariantCulture);
-            LoadAverage15Minute = double.Parse(loadAverages.Split(",")[2].Trim(), CultureInfo.InvariantCulture);
+            Time = DateTimeOffset.Parse(commandResult.Split("top -")[1].Split("up")[0].Trim()).DateTime;
+            TotalCpuUsage = 100.0 - double.Parse(commandResult.Split("%Cpu(s):")[1].Split("ni,")[1].Split("id")[0].Trim(), CultureInfo.InvariantCulture);
 
             foreach (string row in commandResult.Split("PID")[1].Split("COMMAND")[1].Split("\n"))
             {
@@ -46,7 +51,13 @@ namespace AutoBuilder.Models
 
                 applicationRow.CpuUsage = double.Parse(values[8].Trim(), CultureInfo.InvariantCulture);
                 applicationRow.MemoryUsage = double.Parse(values[9].Trim(), CultureInfo.InvariantCulture);
-                applicationRow.Name = values[11].Trim();
+                applicationRow.Path = values[11].Trim();
+
+                string cpuTimeString = values[10].Trim();
+                double minutes = double.Parse(cpuTimeString.Split(":")[0].Trim(), CultureInfo.InvariantCulture);
+                double seconds = double.Parse(cpuTimeString.Split(":")[1].Trim(), CultureInfo.InvariantCulture);
+                applicationRow.CpuTime = minutes * 60 + seconds;
+
                 ApplicatonRows.Add(applicationRow);
             }
         }
