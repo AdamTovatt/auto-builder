@@ -4,6 +4,8 @@ auto-builder/[Rr]elease/
 auto-builder/[Rr]eleases/
 auto-builder/[Bb]in/
 auto-builder/[Oo]bj/
+AutoBuilderTests/[Oo]bj/
+AutoBuilderTests/[Bb]in/
 .vs/
 auto-builder/Properties/launchSettings.json
 auto-builder-configuration.json
