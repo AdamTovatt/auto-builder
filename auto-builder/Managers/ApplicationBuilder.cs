@@ -25,13 +25,30 @@ namespace AutoBuilder.Managers
         [JsonIgnore]
         public int ApplicationCount { get { return Applications.Count; } }
 
-        public async Task<List<Application>> GetApplicationsAsync(TopCommand topCommand)
+        public List<Application> GetApplications(TopCommand topCommand, SystemctlListCommand listCommand)
         {
             List<Application> result = new List<Application>();
 
             foreach(ApplicationConfiguration configuration in Applications)
             {
                 Application application = new Application(configuration);
+
+                TopCommand.ApplicationRow topCommandEntry = topCommand.ApplicatonRows.Where(x => x.Path.Contains(configuration.Name)).FirstOrDefault();
+                SystemctlListCommand.ApplicationRow listCommandEntry = listCommand.ApplicationRows.Where(x => x.Name.Contains(configuration.Name)).FirstOrDefault();
+
+                if(topCommandEntry != null)
+                {
+                    application.CpuTime = topCommandEntry.CpuTime;
+                    application.CpuUsage = topCommandEntry.CpuUsage;
+                    application.MemoryUsage = topCommandEntry.MemoryUsage;
+                }
+
+                if(listCommandEntry != null)
+                {
+                    application.Status = listCommandEntry.Status;
+                    application.SubStatus = listCommandEntry.SubStatus;
+                }
+
                 result.Add(application);
             }
 

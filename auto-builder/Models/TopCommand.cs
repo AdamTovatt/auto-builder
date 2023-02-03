@@ -10,7 +10,7 @@ namespace AutoBuilder.Models
 {
     public class TopCommand
     {
-        public class TopCommandApplicationRow
+        public class ApplicationRow
         {
             public double CpuUsage { get; set; }
             public double MemoryUsage { get; set; }
@@ -25,13 +25,13 @@ namespace AutoBuilder.Models
         public DateTime Time { get; set; }
         public string Uptime { get; set; }
         public double TotalCpuUsage { get; set; }
-        public List<TopCommandApplicationRow> ApplicatonRows { get; set; }
+        public List<ApplicationRow> ApplicatonRows { get; set; }
 
         public TopCommand() { }
 
         public TopCommand(string commandResult)
         {
-            ApplicatonRows = new List<TopCommandApplicationRow>();
+            ApplicatonRows = new List<ApplicationRow>();
 
             string loadAverages = commandResult.Split("load average:")[1].Split("\n")[0];
             LoadAverage1Minute = (double.Parse(loadAverages.Split(",")[0].Trim(), CultureInfo.InvariantCulture) / 4.0) * 100;
@@ -46,7 +46,7 @@ namespace AutoBuilder.Models
                 if (string.IsNullOrEmpty(row.Trim()))
                     continue;
 
-                TopCommandApplicationRow applicationRow = new TopCommandApplicationRow();
+                ApplicationRow applicationRow = new ApplicationRow();
                 List<string> values = row.Split(" ").Where(x => !string.IsNullOrEmpty(x)).ToList();
 
                 applicationRow.CpuUsage = double.Parse(values[8].Trim(), CultureInfo.InvariantCulture);

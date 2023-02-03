@@ -34,6 +34,12 @@ namespace AutoBuilder.Models
         [JsonProperty("cpuTime")]
         public double CpuTime { get; set; }
 
+        /// <summary>
+        /// THe current memory usage of this application
+        /// </summary>
+        [JsonProperty("memoryUsage")]
+        public double MemoryUsage { get; set; }
+
         public Application() { }
 
         public Application(ApplicationConfiguration configuration)

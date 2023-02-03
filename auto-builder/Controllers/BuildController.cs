@@ -72,10 +72,7 @@ namespace AutoBuilder.Controllers
                 {
                     ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
 
-
-                    TopCommand topCommand = await TopCommand.GetCurrentAsync();
-
-                    List<Application> applications = await builder.GetApplicationsAsync(topCommand);
+                    List<Application> applications = builder.GetApplications(await TopCommand.GetCurrentAsync(), await SystemctlListCommand.GetCurrentAsync());
 
                     return new ApiResponse(new
                     {
