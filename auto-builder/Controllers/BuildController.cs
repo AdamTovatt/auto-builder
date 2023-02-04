@@ -71,15 +71,17 @@ namespace AutoBuilder.Controllers
                 try
                 {
                     ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
+                    TopCommand topCommand = await TopCommand.GetCurrentAsync();
 
-                    List<Application> applications = builder.GetApplications(await TopCommand.GetCurrentAsync(), await SystemctlListCommand.GetCurrentAsync());
+                    List<Application> applications = builder.GetApplications(topCommand, await SystemctlListCommand.GetCurrentAsync());
 
                     return new ApiResponse(new
                     {
                         temperature = await TemperatureCommand.GetCurrentAsync(),
                         applicationCount = applications.Count,
                         configPath = ApplicationBuilder.ConfigurationFilePath,
-                        applications
+                        applications,
+                        topCommand
                     }, System.Net.HttpStatusCode.OK);
                 }
                 catch (Exception exception)
