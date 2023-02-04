@@ -34,7 +34,7 @@ namespace AutoBuilder.Managers
                 Application application = new Application(configuration);
 
                 TopCommand.ApplicationRow topCommandEntry = topCommand.ApplicatonRows.Where(x => x.Path.Contains(configuration.Name)).FirstOrDefault();
-                SystemctlListCommand.ApplicationRow listCommandEntry = listCommand.ApplicationRows.Where(x => x.Name.Contains(configuration.Name)).FirstOrDefault();
+                SystemctlListCommand.ApplicationRow listCommandEntry = listCommand.GetApplication(configuration.Name);
 
                 if(topCommandEntry != null)
                 {

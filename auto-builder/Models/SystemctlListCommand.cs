@@ -1,6 +1,7 @@
 ﻿using AutoBuilder.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AutoBuilder.Models
@@ -15,13 +16,15 @@ namespace AutoBuilder.Models
         }
 
         public string Error { get; set; }
-        public List<ApplicationRow> ApplicationRows { get; set; }
+        public List<ApplicationRow> ApplicationRows { get { return applicationRows.Values.ToList(); } }
+
+        private Dictionary<string, ApplicationRow> applicationRows;
 
         public static async Task<SystemctlListCommand> GetCurrentAsync()
         {
             try
             {
-                string commandResult = await (new Command("", WorkingDirectory.Default)).RunAsync();
+                string commandResult = await (new Command("sudo systemctl --no-pager --type=service", WorkingDirectory.Default)).RunAsync();
                 return new SystemctlListCommand(commandResult);
             }
             catch(Exception exception)
@@ -34,7 +37,40 @@ namespace AutoBuilder.Models
 
         public SystemctlListCommand(string commandResult)
         {
-            ApplicationRows = new List<ApplicationRow>();
+            applicationRows = new Dictionary<string, ApplicationRow>();
+
+            string rows = commandResult.Split("DESCRIPTION")[1].Split("LOAD   = Reflects")[0].Trim();
+
+            foreach(string row in rows.Split("\n"))
+            {
+                if (string.IsNullOrEmpty(row.Trim()))
+                    continue;
+
+                string processedRow = row.Trim();
+                ApplicationRow application = new ApplicationRow();
+                application.Name = processedRow.Split(" ")[0];
+
+                for (int i = application.Name.Length; i < processedRow.Length; i++)
+                {
+                    if (char.IsLetter(processedRow[i]))
+                    {
+                        processedRow = processedRow.Substring(i);
+                        break;
+                    }
+                }
+
+                application.Status = processedRow.Split(" ")[1];
+                application.SubStatus = processedRow.Split(" ")[2];
+
+                applicationRows.Add(application.Name, application);
+            }
+        }
+
+        public ApplicationRow GetApplication(string name)
+        {
+            if (applicationRows.TryGetValue(string.Format("{0}.service", name), out ApplicationRow row))
+                return row;
+            return null;
         }
     }
 }
