@@ -66,7 +66,7 @@ namespace AutoBuilder.Models
         {
             try
             {
-                Command topCommand = new Command("top -n 1 -b -u pi", WorkingDirectory.Default);
+                Command topCommand = new Command("top -n 1 -b -u pi -w512", WorkingDirectory.Default);
                 return new TopCommand(await topCommand.RunAsync());
             }
             catch (Exception exception)
