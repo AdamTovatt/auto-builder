@@ -81,7 +81,8 @@ namespace AutoBuilder.Controllers
                         applicationCount = applications.Count,
                         configPath = ApplicationBuilder.ConfigurationFilePath,
                         applications,
-                        topCommand
+                        topCommand,
+                        psCommand = await PsCommand.GetCurrentAsync()
                     }, System.Net.HttpStatusCode.OK);
                 }
                 catch (Exception exception)
