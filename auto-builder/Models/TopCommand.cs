@@ -17,6 +17,7 @@ namespace AutoBuilder.Models
             public double MemoryUsage { get; set; }
             public double CpuTime { get; set; }
             public string Path { get; set; }
+            public string Name { get; set; }
 
             public override string ToString()
             {
@@ -66,6 +67,11 @@ namespace AutoBuilder.Models
                 applicationRow.MemoryUsage = double.Parse(values[9].Trim(), CultureInfo.InvariantCulture);
                 applicationRow.Path = values[11].Trim();
 
+                if (applicationRow.Path.Contains("/"))
+                    applicationRow.Name = applicationRow.Path.Split("/").Last();
+                else
+                    applicationRow.Name = applicationRow.Path;
+
                 string cpuTimeString = values[10].Trim();
                 double minutes = double.Parse(cpuTimeString.Split(":")[0].Trim(), CultureInfo.InvariantCulture);
                 double seconds = double.Parse(cpuTimeString.Split(":")[1].Trim(), CultureInfo.InvariantCulture);
@@ -73,6 +79,11 @@ namespace AutoBuilder.Models
 
                 ApplicatonRows.Add(applicationRow);
             }
+        }
+
+        public ApplicationRow GetApplicationRow(string name)
+        {
+            return null;
         }
 
         public static async Task<TopCommand> GetCurrentAsync()
