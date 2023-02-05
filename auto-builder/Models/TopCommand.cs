@@ -1,4 +1,5 @@
 ﻿using AutoBuilder.Helpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -25,6 +26,8 @@ namespace AutoBuilder.Models
         public DateTime Time { get; set; }
         public string Uptime { get; set; }
         public double TotalCpuUsage { get; set; }
+
+        [JsonIgnore]
         public List<ApplicationRow> ApplicatonRows { get; set; }
 
         public TopCommand() { }
@@ -40,6 +43,8 @@ namespace AutoBuilder.Models
 
             Time = DateTimeOffset.Parse(commandResult.Split("top -")[1].Split("up")[0].Trim()).DateTime;
             TotalCpuUsage = 100.0 - double.Parse(commandResult.Split("%Cpu(s):")[1].Split("ni,")[1].Split("id")[0].Trim(), CultureInfo.InvariantCulture);
+
+            Uptime = commandResult.Split("load average:")[0].Split("up")[1].Split(",")[0].Trim();
 
             foreach (string row in commandResult.Split("PID")[1].Split("COMMAND")[1].Split("\n"))
             {

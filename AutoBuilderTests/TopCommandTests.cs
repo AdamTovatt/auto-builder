@@ -32,6 +32,7 @@ namespace AutoBuilderTests
             Assert.IsTrue(top.LoadAverage5Minute == (0.20 / 4) * 100);
             Assert.IsTrue(top.LoadAverage15Minute == (0.62 / 4) * 100);
             Assert.IsTrue(top.ApplicatonRows.Count == 10);
+            Assert.IsTrue(top.Uptime == "3 days");
         }
     }
 }
