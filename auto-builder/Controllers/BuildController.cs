@@ -60,15 +60,6 @@ namespace AutoBuilder.Controllers
             }
         }
 
-        [HttpGet("/test")]
-        public async Task<IActionResult> GetCommandResult(string apiKey, string command)
-        {
-            if (EnvironmentHelper.GetEnvironmentVariable("APIKEY") != apiKey)
-                return new ApiResponse("Invalid apiKey provided in query parameter", System.Net.HttpStatusCode.BadRequest);
-
-            return new ApiResponse(new { result = await (new Command(command, WorkingDirectory.Default)).RunAsync() });
-        }
-
         [HttpGet("/status")]
         public async Task<IActionResult> GetStatus(string apiKey)
         {

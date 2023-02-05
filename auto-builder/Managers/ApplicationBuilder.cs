@@ -39,7 +39,7 @@ namespace AutoBuilder.Managers
                 if(topCommandEntry != null)
                 {
                     application.CpuTime = topCommandEntry.CpuTime;
-                    application.CpuUsage = topCommandEntry.CpuUsage;
+                    application.CpuUsage = topCommandEntry.CpuUsage / 4.0; //the processor has 4 cores
                     application.MemoryUsage = topCommandEntry.MemoryUsage;
                 }
 
