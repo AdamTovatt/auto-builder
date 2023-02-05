@@ -17,9 +17,15 @@ namespace AutoBuilder.Models
             public double MemoryUsage { get; set; }
             public double CpuTime { get; set; }
             public string Path { get; set; }
+
+            public override string ToString()
+            {
+                return Path;
+            }
         }
 
         public string Error { get; set; }
+        public string Raw { get; set; }
         public double LoadAverage1Minute { get; set; }
         public double LoadAverage5Minute { get; set; }
         public double LoadAverage15Minute { get; set; }
@@ -35,6 +41,8 @@ namespace AutoBuilder.Models
         public TopCommand(string commandResult)
         {
             ApplicatonRows = new List<ApplicationRow>();
+
+            Raw = commandResult;
 
             string loadAverages = commandResult.Split("load average:")[1].Split("\n")[0];
             LoadAverage1Minute = (double.Parse(loadAverages.Split(",")[0].Trim(), CultureInfo.InvariantCulture) / 4.0) * 100;
