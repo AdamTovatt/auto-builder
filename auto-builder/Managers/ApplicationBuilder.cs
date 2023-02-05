@@ -33,7 +33,7 @@ namespace AutoBuilder.Managers
             {
                 Application application = new Application(configuration);
 
-                TopCommand.ApplicationRow topCommandEntry = topCommand.ApplicatonRows.Where(x => x.Path.Contains(configuration.Name)).FirstOrDefault();
+                TopCommand.ApplicationRow topCommandEntry = topCommand.GetApplicationRow(configuration.Name);
                 SystemctlListCommand.ApplicationRow listCommandEntry = listCommand.GetApplication(configuration.Name);
 
                 if(topCommandEntry != null)

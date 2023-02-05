@@ -26,19 +26,19 @@ namespace AutoBuilder.Models
         /// The current cpu usage of this application
         /// </summary>
         [JsonProperty("cpuUsage")]
-        public double CpuUsage { get; set; }
+        public double CpuUsage { get; set; } = -1;
 
         /// <summary>
         /// The current cpu time of this application
         /// </summary>
         [JsonProperty("cpuTime")]
-        public double CpuTime { get; set; }
+        public double CpuTime { get; set; } = -1;
 
         /// <summary>
         /// THe current memory usage of this application
         /// </summary>
         [JsonProperty("memoryUsage")]
-        public double MemoryUsage { get; set; }
+        public double MemoryUsage { get; set; } = -1;
 
         public Application() { }
 

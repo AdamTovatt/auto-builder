@@ -83,6 +83,15 @@ namespace AutoBuilder.Models
 
         public ApplicationRow GetApplicationRow(string name)
         {
+            string kebabVariation = name.ToKebabCasing();
+            string pascalVariation = name.ToPascalCasing();
+
+            foreach(ApplicationRow row in ApplicatonRows)
+            {
+                if (row.Name == kebabVariation || row.Name == pascalVariation)
+                    return row;
+            }
+
             return null;
         }
 

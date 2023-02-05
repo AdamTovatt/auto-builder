@@ -33,6 +33,12 @@ namespace AutoBuilderTests
             Assert.IsTrue(top.LoadAverage15Minute == (0.62 / 4) * 100);
             Assert.IsTrue(top.ApplicatonRows.Count == 10);
             Assert.IsTrue(top.Uptime == "3 days");
+            Assert.IsTrue(top.GetApplicationRow("room-reservation-api") != null);
+            Assert.IsTrue(top.GetApplicationRow("image-serializer-api") != null);
+            Assert.IsTrue(top.GetApplicationRow("image-serializer-api").MemoryUsage == 0.7);
+            Assert.IsTrue(top.GetApplicationRow("ImageSerializerApi") != null);
+            Assert.IsTrue(top.GetApplicationRow("BetapetBotApi") != null);
+            Assert.IsTrue(top.GetApplicationRow("betapet-bot-api") != null);
         }
     }
 }
