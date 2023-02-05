@@ -6,6 +6,7 @@ namespace AutoBuilder.Models
 {
     public class PsCommand
     {
+        public string Error { get; set; }
         public string CommandResult { get; set; }
 
         public PsCommand() { }
@@ -14,16 +15,16 @@ namespace AutoBuilder.Models
             CommandResult = commandResult;
         }
 
-        public static async Task<TopCommand> GetCurrentAsync()
+        public static async Task<PsCommand> GetCurrentAsync()
         {
             try
             {
-                Command topCommand = new Command("ps -e -o cmd:512,pcpu,%mem,time --sort=-%mem | head -n 1000", WorkingDirectory.Default);
-                return new TopCommand(await topCommand.RunAsync());
+                Command psCommand = new Command("ps -e -o cmd:512,pcpu,%mem,time --sort=-%mem | head -n 1000", WorkingDirectory.Default);
+                return new PsCommand(await psCommand.RunAsync());
             }
             catch (Exception exception)
             {
-                return new TopCommand() { Error = exception.Message };
+                return new PsCommand() { Error = exception.Message };
             }
         }
     }
