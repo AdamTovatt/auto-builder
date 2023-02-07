@@ -40,8 +40,8 @@ namespace AutoBuilder.Controllers
             }
         }
 
-        [HttpGet("/log")]
-        public async Task<IActionResult> GetLog(string applicationName)
+        [HttpGet("/buildLog")]
+        public async Task<IActionResult> GetBuildLog(string applicationName)
         {
             try
             {
@@ -88,6 +88,29 @@ namespace AutoBuilder.Controllers
                 {
                     return new ApiResponse(new { configurationFilePath = ApplicationBuilder.ConfigurationFilePath, errorMessage = exception.Message }, System.Net.HttpStatusCode.InternalServerError);
                 }
+            }
+            catch (ApiException exception)
+            {
+                return new ApiResponse(exception);
+            }
+        }
+
+        [HttpGet("/log")]
+        public async Task<IActionResult> GetLog(string applicationName, string apiKey)
+        {
+            try
+            {
+                if (EnvironmentHelper.GetEnvironmentVariable("APIKEY") != apiKey)
+                    return new ApiResponse("Invalid apiKey provided in query parameter", System.Net.HttpStatusCode.BadRequest);
+
+                ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
+
+                if (builder.GetApplication(applicationName) == null)
+                    return new ApiResponse("No application with name: " + applicationName, System.Net.HttpStatusCode.BadRequest);
+
+                Command logCommand = new Command(string.Format("journalctl -u {0}.service -n 30 -e", applicationName), WorkingDirectory.Default);
+
+                return new ApiResponse(new { log = await logCommand.RunAsync() });
             }
             catch (ApiException exception)
             {
