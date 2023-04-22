@@ -91,6 +91,12 @@ namespace AutoBuilder.Managers
 
         public ApplicationConfiguration GetApplication(string name)
         {
+            if(Applications == null)
+                throw new ApiException($"Tried to get an application called {name} but applications list is null", System.Net.HttpStatusCode.BadRequest);
+
+            if(Applications.Count == 0)
+                throw new ApiException($"Tried to get an application called {name} but applications list is empty (count == 0)", System.Net.HttpStatusCode.BadRequest);
+
             return Applications.Find(x => x.Name.ToLower() == name.ToLower());
         }
 
