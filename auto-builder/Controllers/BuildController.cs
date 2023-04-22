@@ -21,6 +21,9 @@ namespace AutoBuilder.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(applicationName))
+                    return new ApiResponse("No application name provided in query parameter", System.Net.HttpStatusCode.BadRequest);
+
                 if (EnvironmentHelper.GetEnvironmentVariable("APIKEY") != apiKey)
                     return new ApiResponse("Invalid apiKey provided in query parameter", System.Net.HttpStatusCode.BadRequest);
 
@@ -45,6 +48,9 @@ namespace AutoBuilder.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(applicationName))
+                    return new ApiResponse("No application name provided in query parameter", System.Net.HttpStatusCode.BadRequest);
+
                 ApplicationBuilder builder = await ApplicationBuilder.LoadAsync();
 
                 ApplicationConfiguration application = builder.GetApplication(applicationName);
@@ -100,6 +106,9 @@ namespace AutoBuilder.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(applicationName))
+                    return new ApiResponse("No application name provided in query parameter", System.Net.HttpStatusCode.BadRequest);
+
                 if (EnvironmentHelper.GetEnvironmentVariable("APIKEY") != apiKey)
                     return new ApiResponse("Invalid apiKey provided in query parameter", System.Net.HttpStatusCode.BadRequest);
 

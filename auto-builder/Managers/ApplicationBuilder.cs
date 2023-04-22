@@ -91,7 +91,7 @@ namespace AutoBuilder.Managers
 
         public ApplicationConfiguration GetApplication(string name)
         {
-            return Applications.Where(x => x.Name.ToLower() == name.ToLower()).FirstOrDefault();
+            return Applications.Find(x => x.Name.ToLower() == name.ToLower());
         }
 
         public static ApplicationBuilder FromJson(string json)
